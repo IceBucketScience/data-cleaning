@@ -3,6 +3,15 @@ from py2neo import Graph, Relationship
 
 graph = Graph(os.environ['DB_URI'])
 
+def clear_nomination_data():
+    tx = graph.cypher.begin()
+
+    tx.append("MATCH (p:Person) WHERE has(p.timeNominated) REMOVE p.timeNominated")
+    tx.append("MATCH (p:Person) WHERE has(p.timeCompleted) REMOVE p.timeCompleted")
+    tx.append("MATCH ()-[n:NOMINATED]-() DELETE n")
+
+    tx.commit()
+
 def get_posts_in_order():
     unordered_posts = [post for post in graph.find('Post')]
     return sorted(unordered_posts, key=lambda post: post['timeCreated'])
@@ -46,4 +55,5 @@ def map_nominations():
 
         map_tagged(post, poster, tagged)
 
+clear_nomination_data()
 map_nominations()
