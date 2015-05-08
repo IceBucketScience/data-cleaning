@@ -2,7 +2,6 @@ import os
 from datetime import datetime
 from py2neo import Graph as Db
 from gexf import Gexf, Graph, Node, Edge
-from lxml import etree
 
 db = Db(os.environ['DB_URI'])
 
